@@ -1,5 +1,7 @@
 <template>
   <div id="app">
+    <Header/>
+    <AddTodo v-on:add-todo="addTodo" />
     <Todos :todos="todos"
            v-on:del-todo="deleteTodo"
     />
@@ -8,10 +10,14 @@
 
 <script>
 import Todos from "@/components/Todos";
+import Header from "@/components/Layout/Header";
+import AddTodo from "@/components/AddTodo";
 
 export default {
   components: {
-    Todos
+    Todos,
+    Header,
+    AddTodo,
   },
   data() {
     return {
@@ -37,6 +43,9 @@ export default {
   methods: {
     deleteTodo(id) {
       this.todos = this.todos.filter(todo => todo.id !== id)
+    },
+    addTodo(newTodo){
+      this.todos = [...this.todos, newTodo];
     }
   }
 }
@@ -52,5 +61,18 @@ export default {
 body {
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.4;
+}
+
+.btn{
+  display: inline-block;
+  border: none;
+  background: #555;
+  color: #fff;
+  padding: 7px 20px;
+  cursor: pointer;
+}
+
+.btn:hover{
+  background: #666;
 }
 </style>
