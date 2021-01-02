@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Header/>
-    <AddTodo v-on:add-todo="addTodo" />
+    <AddTodo v-on:add-todo="addTodo"/>
     <Todos :todos="todos"
            v-on:del-todo="deleteTodo"
     />
@@ -12,6 +12,7 @@
 import Todos from "@/components/Todos";
 import Header from "@/components/Layout/Header";
 import AddTodo from "@/components/AddTodo";
+import axios from 'axios';
 
 export default {
   components: {
@@ -21,32 +22,29 @@ export default {
   },
   data() {
     return {
-      todos: [
-        {
-          id: 1,
-          title: "Todo one",
-          completed: false
-        },
-        {
-          id: 2,
-          title: "Todo Two",
-          completed: true
-        },
-        {
-          id: 3,
-          title: "Todo Three",
-          completed: false
-        },
-      ]
+      todos: []
     }
   },
   methods: {
     deleteTodo(id) {
-      this.todos = this.todos.filter(todo => todo.id !== id)
+      this.todos = this.todos.filter(todo => todo.id !== id);
     },
-    addTodo(newTodo){
-      this.todos = [...this.todos, newTodo];
+    addTodo(newTodo) {
+      const {title, completed} = newTodo;
+
+      axios.post('https://jsonplaceholder.typicode.com/todos', {
+        title,
+        completed,
+      })
+          .then(res => this.todos = [...this.todos, res.data])
+          .catch(err => console.log(err));
+
     }
+  },
+  created() {
+    axios.get('https://jsonplaceholder.typicode.com/todos?_limit=5')
+        .then(res => this.todos = res.data)
+        .catch(err => console.log(err));
   }
 }
 </script>
@@ -63,7 +61,7 @@ body {
   line-height: 1.4;
 }
 
-.btn{
+.btn {
   display: inline-block;
   border: none;
   background: #555;
@@ -72,7 +70,7 @@ body {
   cursor: pointer;
 }
 
-.btn:hover{
+.btn:hover {
   background: #666;
 }
 </style>
